@@ -31,7 +31,7 @@ public class FamilyActivity extends AppCompatActivity {
         ListView listView = (ListView) findViewById(R.id.list);
 
 // create the array adapter
-        WordAdapter wordAdapter = new WordAdapter(this, initialiseList());
+        WordAdapter wordAdapter = new WordAdapter(this, initialiseList(),R.color.category_family);
 
 // set the adapter on listview
         listView.setAdapter(wordAdapter);
