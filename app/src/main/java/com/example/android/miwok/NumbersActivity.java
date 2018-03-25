@@ -15,14 +15,21 @@
  */
 package com.example.android.miwok;
 
+import android.media.MediaPlayer;
+import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class NumbersActivity extends AppCompatActivity {
+
+    private MediaPlayer mMediaPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +44,15 @@ public class NumbersActivity extends AppCompatActivity {
 
 // set the adapter on listview
         listView.setAdapter(wordAdapter);
+
+// configure onclick
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                mMediaPlayer  = MediaPlayer.create(NumbersActivity.this, R.raw.number_one);
+                mMediaPlayer.start();
+            }
+        });
     }
 
     private ArrayList<Word> initialiseList() {
@@ -54,4 +70,6 @@ public class NumbersActivity extends AppCompatActivity {
 
         return words;
     }
+
+
 }
