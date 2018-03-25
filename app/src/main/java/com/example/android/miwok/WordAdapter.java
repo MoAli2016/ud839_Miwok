@@ -41,8 +41,8 @@ public final class  WordAdapter extends ArrayAdapter<Word> {
 
         //find the image view with id image
         ImageView mImageView = (ImageView) listItemView.findViewById(R.id.imageItem);
-        mImageView.setImageResource(word.getImageResourceId());
-        /*if(word.hasImage()) {
+        
+        if(word.hasImage()) {
 
             //get the imageResource get and set it as source of the image view
             mImageView.setImageResource(word.getImageResourceId());
@@ -52,7 +52,7 @@ public final class  WordAdapter extends ArrayAdapter<Word> {
         }
         else {
             mImageView.setVisibility(View.GONE);
-        }*/
+        }
 
         return listItemView;
     }

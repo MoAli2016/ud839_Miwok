@@ -10,6 +10,7 @@ public final class Word {
     private String mtMiwokTranslation;
     private int mImageResourceId;
     private boolean mHasImage;
+    private final int NO_IMAGE_PROVIDED = -1;
 
 
     public Word(String defaultTranslation, String miwokTranslation){
@@ -34,9 +35,9 @@ public final class Word {
     public int getImageResourceId(){
         return  this.mImageResourceId;
     }
-    
+
     public boolean hasImage(){
-        return mHasImage;
+        return mHasImage = mImageResourceId > NO_IMAGE_PROVIDED;
     }
 
     public String ToString(){

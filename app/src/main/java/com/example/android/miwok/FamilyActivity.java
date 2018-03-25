@@ -17,6 +17,9 @@ package com.example.android.miwok;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ListView;
+
+import java.util.ArrayList;
 
 public class FamilyActivity extends AppCompatActivity {
 
@@ -24,5 +27,29 @@ public class FamilyActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_family);
+// get a reference to the listview
+        ListView listView = (ListView) findViewById(R.id.list);
+
+// create the array adapter
+        WordAdapter wordAdapter = new WordAdapter(this, initialiseList());
+
+// set the adapter on listview
+        listView.setAdapter(wordAdapter);
+    }
+
+    private ArrayList<Word> initialiseList() {
+        ArrayList<Word> list = new ArrayList<Word>();
+        list.add(new Word("father","әpә", R.drawable.family_father));
+        list.add(new Word("mother","әṭa", R.drawable.family_mother));
+        list.add(new Word("son","angsi", R.drawable.family_son));
+        list.add(new Word("daughter","tune", R.drawable.family_daughter));
+        list.add(new Word("older brother","taachi", R.drawable.family_older_brother));
+        list.add(new Word("younger brother","chalitti", R.drawable.family_younger_brother));
+        list.add(new Word("older sister","teṭe", R.drawable.family_older_sister));
+        list.add(new Word("younger sister","kolliti", R.drawable.family_younger_sister));
+        list.add(new Word("grandmother","ama", R.drawable.family_grandmother));
+        list.add(new Word("grandfather","paapa", R.drawable.family_grandfather));
+
+        return list;
     }
 }
