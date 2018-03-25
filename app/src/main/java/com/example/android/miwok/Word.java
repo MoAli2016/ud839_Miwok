@@ -6,6 +6,7 @@ package com.example.android.miwok;
 
 public final class Word {
 
+    private int mAudioResourceId;
     private String mtDefaultTranslation;
     private String mtMiwokTranslation;
     private int mImageResourceId;
@@ -13,15 +14,17 @@ public final class Word {
     private final int NO_IMAGE_PROVIDED = -1;
 
 
-    public Word(String defaultTranslation, String miwokTranslation){
+    public Word(String defaultTranslation, String miwokTranslation, int audioResourceId){
         this.mtDefaultTranslation = defaultTranslation;
         this.mtMiwokTranslation = miwokTranslation;
+        this.mAudioResourceId = audioResourceId;
     }
 
-    public Word(String defaultTranslation, String miwokTranslation, int imageResourceId){
+    public Word(String defaultTranslation, String miwokTranslation, int imageResourceId, int audioResourceId){
         this.mtDefaultTranslation = defaultTranslation;
         this.mtMiwokTranslation = miwokTranslation;
         this.mImageResourceId = imageResourceId;
+        this.mAudioResourceId = audioResourceId;
     }
 
     public String getDefaultTranslation(){
@@ -42,5 +45,9 @@ public final class Word {
 
     public String ToString(){
         return mtDefaultTranslation + " " + mtMiwokTranslation;
+    }
+
+    public int getAudioResourceId() {
+        return mAudioResourceId;
     }
 }
