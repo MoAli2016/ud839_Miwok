@@ -15,23 +15,28 @@
  */
 package com.example.android.miwok;
 
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class FamilyActivity extends AppCompatActivity {
     private MediaPlayer mMediaPlayer;
     private ArrayList<Word> mWords;
+    private boolean mAudioFocusGranted = false;
+    private AudioManager mAudioManager;
 
     private MediaPlayer.OnCompletionListener mListener = new MediaPlayer.OnCompletionListener() {
         @Override
         public void onCompletion(MediaPlayer mediaPlayer) {
-            Helper.release(mediaPlayer);
+            release();
         }
     };
 
@@ -53,11 +58,14 @@ public class FamilyActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                release();
                 Word word = mWords.get(position);
-                Helper.release(mMediaPlayer);
-                mMediaPlayer  = MediaPlayer.create(FamilyActivity.this, word.getAudioResourceId());
-                mMediaPlayer.start();
-                mMediaPlayer.setOnCompletionListener(mListener);
+                manageAndGrantAudioFocus();
+                if (mAudioFocusGranted) {
+                    mMediaPlayer = MediaPlayer.create(FamilyActivity.this, word.getAudioResourceId());
+                    mMediaPlayer.start();
+                    mMediaPlayer.setOnCompletionListener(mListener);
+                }
             }
         });
     }
@@ -76,5 +84,68 @@ public class FamilyActivity extends AppCompatActivity {
         list.add(new Word("grandfather","paapa", R.drawable.family_grandfather, R.raw.family_grandfather));
 
         return list;
+    }
+
+    AudioManager.OnAudioFocusChangeListener focusListener = new AudioManager.OnAudioFocusChangeListener() {
+        //3
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            switch (focusChange) {
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    Log.i("NumbersActivity", "AUDIOFOCUS_LOSS_TRANSIENT");
+                    mMediaPlayer.pause();
+                    mMediaPlayer.seekTo(0);
+                    break;
+
+                case AudioManager.AUDIOFOCUS_LOSS:
+                    Log.i("NumbersActivity", "AUDIOFOCUS_LOSS");
+                    release();
+                    break;
+
+                case AudioManager.AUDIOFOCUS_GAIN:
+                    Log.i("NumbersActivity", "default");
+                    mMediaPlayer.start();
+                    break;
+            }
+        }
+    };
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        release();
+    }
+
+    private void manageAndGrantAudioFocus() {
+        //1
+        mAudioManager = (AudioManager) this.getSystemService(this.AUDIO_SERVICE);
+        int result = mAudioManager.requestAudioFocus(
+                focusListener,
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+        if (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            mAudioFocusGranted = true;
+        } else {//if (result == AudioManager.AUDIOFOCUS_REQUEST_FAILED){
+            Toast.makeText(FamilyActivity.this, "autfocus request failed", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void release() {
+/**
+ * Clean up the media player by releasing its resources.
+ */
+        // If the media player is not null, then it may be currently playing a sound.
+        if (mMediaPlayer != null) {
+            // Regardless of the current state of the media player, release its resources
+            // because we no longer need it.
+            mMediaPlayer.release();
+
+            // Set the media player back to null. For our code, we've decided that
+            // setting the media player to null is an easy way to tell that the media player
+            // is not configured to play an audio file at the moment.
+            mMediaPlayer = null;
+            mAudioManager.abandonAudioFocus(focusListener);
+        }
     }
 }
